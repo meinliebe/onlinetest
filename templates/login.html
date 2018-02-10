@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+
+</style>
+<div class="account-wrapper" style="margin-top: 80px !important;">
+	<div class="account-body">			
+		<!-- <h4>Universitas Muhammadiyah Surakarta</h4> -->
+		<h3>LOGIN</h3>
+		<form class="form account-form" method="POST" action="{% url 'login' %}">
+			{% csrf_token %}
+			{% if messages %}
+			{% for message in messages %}
+			<div {% if message.tags %} class="alert alert-{{message.tags}} display-hide" {% endif %} >
+				<a class="close" data-dismiss="alert" href="#" aria-hidden="true"> x </a>
+				<span><strong>{{message}}</strong></span>
+			</div>
+			{% endfor %}
+			{% endif %}	
+			<div class="form-group">
+				<label for="username" class="placeholder-hidden">Username</label>
+				<input type="text" class="form-control" id="username" name="username" placeholder="Username" tabindex="1">
+			</div> <!-- /.form-group -->
+
+			<div class="form-group">
+				<label for="password" class="placeholder-hidden">Password</label>
+				<input type="password" class="form-control" id="password" name="password" placeholder="Password" tabindex="2">
+			</div> <!-- /.form-group -->
+
+			<div class="form-group clearfix">
+				<div class="pull-right">
+					<a href="#">Login dengan CAS</a>
+				</div>
+			</div> <!-- /.form-group -->
+
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary btn-block btn-lg" tabindex="4">
+					Login &nbsp; <i class="fa fa-sign-in"></i>
+				</button>
+			</div> <!-- /.form-group -->
+
+		</form>
+		<div class="account-footer">
+			<p>
+				<!-- Tidak memiliki Account ? &nbsp; -->
+				<a href="#" class="">Lupa Password ?</a>
+			</p>
+		</div> <!-- /.account-footer -->
+
+	</div> <!-- /.account-body -->
+
+
+</div> <!-- /.account-wrapper -->
+{% endblock content %}

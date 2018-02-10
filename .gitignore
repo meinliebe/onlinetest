@@ -1,0 +1,9 @@
+*.log
+ujian/migrations/*
+ujian/__pycache__/*
+ujian/migrations/__pycache__/*
+soal/migrations/*
+soal/__pycache__/*
+soal/migrations/__pycache__/*
+testkom_project/__pycache__/*
+ujian/templatetags/__pycache__/*

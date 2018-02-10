@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+.table{
+	white-space: nowrap;
+}
+</style>
+<div class="row" style="margin-top:30px;">
+	<div class="col-md-12">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Kategori Soal</h4>	
+				<button class="btn btn-xs btn-secondary pull-right" data-toggle="modal" href="#modal_tambah_kategori"><i class="fa fa-plus"></i> Tambah</button>
+			</div>
+			<div class="portlet-body">
+				{% for  message in messages  %}
+				<div {% if message.tags %} class="alert alert-{{message.tags}} display-hide" {% endif %} >
+					<a class="close" data-dismiss="alert" href="#" aria-hidden="true"> x </a>
+					{% autoescape off %}
+					<span>{{message}}</span>
+					{% endautoescape %}	
+				</div>
+				{% endfor %}
+				<div class="col-md-12">
+					<table id="table_kategori_soal" class="table table-hover table-condensed">
+						<thead>
+							<th>No</th>
+							<th>Mata Kuliah</th>
+							<th>Kategori</th>
+							<th class="pull-right">Aksi</th>
+						</thead>
+						<tbody>
+							{% for k in kategori_soal %}
+							<tr>
+								<td>{{forloop.counter}}</td>
+								<td>{{k.mata_kuliah}}</td>
+								<td>{{k.kategori}}</td>
+								<td class="pull-right">
+									<i class="fa fa-trash text-danger"></i> <a class="hapus_kategori_soal text-danger" data-id-kategori="{{k.id}}" href="#modal_konfirmasi_hapus" data-toggle="modal">Hapus</a>&nbsp;
+									<i class="fa fa-edit text-secondary"></i><a href="{% url 'ubah_kategori_soal' id_kategori=k.id %}"> Ubah</a>									
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="modal_tambah_kategori" class="modal modal-styled fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="modal-title">Tambah Kategori Soal</h3>
+			</div>
+			<div class="modal-body">
+				{% crispy kategori_form %}				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>				
+			</div> 
+		</div> 
+	</div>
+</div>
+
+<div id="modal_konfirmasi_hapus" class="modal modal-styled fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="modal-title">Hapus Kategori Soal</h3>
+			</div>
+			<div class="modal-body">
+				<h6>Apakah anda yakin menghapus kategori soal ?</h6>
+				<form id="form_hapus_kategori_soal" action="{% url 'hapus_kategori_soal' %}" method="POST">
+					{% csrf_token %}
+					<input type="hidden" class="id_kategori" name="id_kategori">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>				
+				<button type="submit" class="btn btn-primary" form="form_hapus_kategori_soal"><i class="fa fa-trash"></i> Hapus</button>				
+			</div> 
+		</div> 
+	</div>
+</div>
+{% endblock content %}
+{% block js %}
+<script>
+$(document).ready(function(){
+	$('a.hapus_kategori_soal').on('click', function(){
+		var id_kategori = $(this).data('idKategori');
+		$('input.id_kategori').val(id_kategori);
+	})
+
+	$('#table_kategori_soal').DataTable()
+})
+</script>
+{% endblock js %}

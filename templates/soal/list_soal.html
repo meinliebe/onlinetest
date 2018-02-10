@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row" style="margin-top:30px;">
+	<div class="col-md-12">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Daftar Soal Ujian</h4>	
+				<a href="{% url 'tambah_soal' %}" class="btn btn-xs btn-secondary pull-right"><i class="fa fa-plus"></i> Tambah Soal</a>
+			</div>
+			<div class="portlet-body">
+				<div class="row">
+					{% if messages %}
+					{% for  message in messages  %}
+					<div {% if message.tags %} class="alert alert-{{message.tags}} display-hide" {% endif %} >
+						<a class="close" data-dismiss="alert" href="#" aria-hidden="true"> x </a>
+						{% autoescape off %}
+						<span>{{message}}</span>
+						{% endautoescape %}	
+					</div>
+					{% endfor %}
+					{% else %}
+					<div class="well well-sm">						
+						<strong>Tips!</strong> Gunakan parameter Mata Kuliah dan Kata Kunci untuk mencari detail soal
+					</div>
+					{% endif %}
+				</div>
+				<div class="row well well-sm">
+					<form class="form-horizontal" action="{% url 'list_soal' %}" method="GET">
+						{% csrf_token %}
+						<!-- <div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label col-md-3">Program Studi:</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control input-sm" placeholder="Program Studi">		
+								</div>
+							</div>							
+						</div> -->
+						<div class="col-md-8 col-md-offset-2">
+							<div class="form-group">
+								<label class="control-label col-md-2">Mata Kuliah:</label>
+								<div class="col-md-10">
+									<select class="form-control select-mata-kuliah" placeholder="Mata Kuliah" required="" name="mata_kuliah">
+										<option value="0">-- Silakan pilih mata kuliah --</option>
+										{% for m_k in mata_kuliah %}
+										<option value="{{m_k.kode}}">{{m_k.mata_kuliah}}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-8 col-md-offset-2">
+							<div class="form-group">
+								<label class="control-label col-md-2">Kata Kunci:</label>
+								<div class="col-md-10">
+									<input type="text" class="form-control input-sm" placeholder="Kata Kunci" name="kata_kunci">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-8 col-md-offset-2">
+							<button type="submit" class="btn btn-secondary btn-xs pull-right"><i class="fa fa-search"></i> Cari</button>
+							{% if all == True %}
+							<a href="{% url 'list_soal' %}" class="pull-right" style="margin-right: 20px;">Tampilkan semua soal</a>
+							{% endif %}
+						</div>
+					</form>
+				</div>
+				<div class="row" style="margin-top: 10px;">									
+					<table class="table table-hover table-condensed">
+						<thead>
+							<th>Mata Kuliah</th>
+							<th>Kategori</th>
+							<th>Sifat</th>
+							<th>Tipe</th>
+							<th>Text Soal</th>
+						</thead>
+						<tbody>
+							{% for s in soal %}
+							<tr>
+								<td>{{s.kategori_soal.mata_kuliah}}</td>
+								<td>{{s.kategori_soal}}</td>
+								<td>{{s.get_sifat_soal_display}}</td>
+								<td>{{s.get_tipe_soal_display}}</td>
+								<td><a href="{% url 'view_soal' s.id %}">{{s.text_soal|safe|truncatechars:110}}</a></td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+$(document).ready(function(){
+	$('.select-mata-kuliah').select2();
+	$('input[name=kata_kunci]').val('{{keyword}}')
+})
+
+</script>
+{% endblock js %}

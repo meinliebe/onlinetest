@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row" style="margin-top:50px;">
+	<div class="col-md-10 col-md-offset-1">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Dashboard Peserta Ujian</h4>
+			</div>
+			<div class="portlet-body">
+				<p>Selamat datang di Computer Based Test UMS. Berikut adalah profil anda: </p>
+				<p>
+					<form action="#" method="POST">
+						{% csrf_token %}
+						{% for p in peserta %}
+						<input type="hidden" name="id_peserta" value="{{p.id}}">
+						<div class="col-md-2"><h6>NAMA</h6></div>
+						<div class="col-md-10">
+							<h6>: {{p.nama|upper}}</h6>
+						</div>
+						<div class="col-md-2"><h6>NIM - PRODI</h6></div>
+						<div class="col-md-10">
+							<h6><span class="text-primary">: {{p.nim|upper}} - {{p.program_studi|upper}}</span></h6>
+						</div>										
+						{% endfor %}
+					</form>
+				</p>
+				<p>Silakan memilih salah satu mata kuliah dibawah ini untuk memulai ujian:</p>
+				<form id="form_mulai" action="{% url 'mulai_ujian' %}" method="POST">
+					{% csrf_token %}
+					{% for m in matkul %}
+						<button {% if m.status_test == True %}type="button" data-toggle="modal" data-target="#konfirmasi_mulai" class="btn btn-md btn-secondary btn-konfirmasi-mulai"{% else %} type="submit" class="btn btn-md btn-danger"{% endif %} name="mata_kuliah" value="{{m.mata_kuliah}}">{{m.nama_mata_kuliah}}</button>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					{% endfor %}
+				</form>
+			</div>
+		</div>
+		<div class="well">			
+			<strong>Tips!</strong> 
+			<ul class="icon-list text-md">
+				<li>Tombol berwarna <span class="label label-secondary demo-element">BIRU</span> jika anda belum pernah mengerjakan test dengan mata kuliah tersebut, silakan klik untuk memulai test.</li>
+				<li>Tombol berwarna <span class="label label-primary demo-element">MERAH</span> jika anda sudah pernah mengerjakan test. Silakan klik untuk melihat score. </li>
+			</ul>
+			
+		</div>
+	</div>
+</div>
+<div id="konfirmasi_mulai" class="modal modal-styled fade" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="modal-title">Konfirmasi Mulai Ujian</h3>
+			</div> <!-- /.modal-header -->
+			<div class="modal-body">
+				<p>
+					<h6 class="text-muted">Apakah anda yakin akan memulai ujian <span class="text-secondary mata-kuliah"></span>?</h6>
+				</p>
+			</div> <!-- /.modal-body -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+				<button type="submit" form="form_mulai" class="btn btn-success btn-mulai" name="mata_kuliah">Mulai &nbsp; <i class="fa fa-angle-double-right"></i> </button>
+			</div> <!-- /.modal-footer -->
+		</div> <!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div>
+{% endblock content %}
+{% block js %}
+<script>
+	$(document).ready(function(){
+		$('button.btn-konfirmasi-mulai').on('click', function(){
+			m_k = $(this).text();
+			kode_m_k = $(this).val();
+			$('span.mata-kuliah').html(m_k);
+			$('button.btn-mulai').val(kode_m_k);
+		})
+	})
+	
+</script>
+{% endblock js %}

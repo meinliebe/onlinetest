@@ -1,0 +1,43 @@
+{% load static %}
+<style>
+.mainnav-menu > li > a:hover {
+	background-color: transparent;	
+}
+</style>
+<div class="container">
+
+	<a class="mainnav-toggle" data-toggle="collapse" data-target=".mainnav-collapse">
+		<span class="sr-only">Toggle navigation</span>
+		<i class="fa fa-bars"></i>
+	</a>
+
+	<nav class="collapse mainnav-collapse" role="navigation">
+
+		<ul class="mainnav-menu">
+			<li class="dropdown ">
+				<a>
+					{{peserta.nama}}
+				</a>
+			</li>
+		</ul>
+		<ul class="mainnav-menu pull-right">
+			<li class="">
+				<a>{{peserta.mata_kuliah}}</a>
+			</li>
+			<li class="dropdown">
+				<a id="highlightCountdown" style="color: #red !important"></a>
+			</li>
+		</ul>
+	</nav>
+</div> <!-- /.container -->
+{% block js %}
+<script>
+	$(document).ready(function(){		
+		console.log("{{waktu}}")
+		$('#highlightCountdown').countdown({
+			until: +"{{waktu}}",
+			compact: true		
+		});
+	})
+</script>
+{% endblock js %}

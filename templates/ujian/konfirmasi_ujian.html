@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row" style="margin-top:120px;">
+	<div class="col-md-8 col-md-offset-2">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				{% if detail_peserta == 0 %}
+					{% if request.user.is_staff %}
+						<h4 class="portlet-title">Administrator</h4>
+					{% else %}
+						<h4 class="portlet-title">Konfirmasi Peserta Ujian</h4>
+					{% endif %}
+				{% else %}
+						<h4 class="portlet-title">Konfirmasi Peserta Ujian</h4>					
+				{% endif %}
+			</div>
+			<div class="portlet-body">
+				{% if detail_peserta == 0 %}
+					{% if request.user.is_staff %}
+						<h6 class="text-primary">Selamat datang {{ request.user.username }}!</h6>
+						<p>Gunakan "Admin Menu" pada pojok kanan atas untuk input soal, menentukan peserta ujian, dan melakukan kegiatan administratif lainnya.</p>					
+					{% else %}
+						<h6 class="text-primary">Maaf, anda tidak diperkenankan untuk ujian</h6>					
+						<p>Pastikan anda sudah terdaftar sebagai Peserta Ujian, silakan menghubungi Administrator.</p>
+						<a href="{% url 'logout' %}" class="btn btn-primary pull-right">Logout</a>
+					{% endif %}	
+				{% else %}				
+					<p>Pastikan nama, NIM, dan mata kuliah anda sudah sesuai dengan data berikut:</p>
+					<form action="{% url 'mulai_ujian' %}" method="POST">
+						{% csrf_token %}
+						<input type="hidden" name="id_peserta" value="{{detail_peserta.id}}">
+						<div class="col-md-2"><h6>NAMA</h6></div>
+						<div class="col-md-10">
+							<h6>: {{detail_peserta.nama|upper}}</h6>
+						</div>
+						<div class="col-md-2"><h6>NIM - PRODI</h6></div>
+						<div class="col-md-10">
+							<h6><span class="text-primary">: {{detail_peserta.nim|upper}} - {{detail_peserta.program_studi|upper}}</span></h6>
+						</div>
+						<div class="col-md-2"><h6>MATA KULIAH</h6></div>
+						<div class="col-md-10">							
+							<h6>: <input type="hidden" name="mata_kuliah" value="{{detail_peserta.mata_kuliah.id}}">{{detail_peserta.mata_kuliah}}</h6> <!-- nama test -->
+						</div>
+						<p>Jika sudah sesuai, silakan klik tombol <b class="badge">Mulai</b> untuk mulai mengerjakan ujian. Perhatikan petunjuk soal dan bacalah tata tertib ujian. Selamat mengerjakan!</p>
+						<button type="submit" class="btn btn-secondary pull-right">Mulai</button>						
+					</form>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}

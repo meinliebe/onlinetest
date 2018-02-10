@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+.table{
+	white-space: nowrap;
+}
+</style>
+<div class="row" style="margin-top:30px;">
+	<div class="col-md-12">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Ubah Kategori Soal</h4>		
+				<a href="{% url 'tambah_kategori_soal' %}" class="pull-right"><i class="fa fa-angle-double-left "></i> Kembali ke daftar kategori</a>
+			</div>
+			<div class="portlet-body">
+				{%crispy kategori_form%}
+			</div>
+		</div>
+	</div>
+</div>	
+{% endblock content %}

@@ -1,0 +1,74 @@
+{% load staticfiles %}
+
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+	<title>{{app_title}}</title>
+	{% include 'header.html' %}
+</head>
+{% if is_login %}
+<style>
+body{
+	background: url({% static 'img/symphony.png' %}) 		
+}
+.content{
+	padding-top: 20px;
+}
+.account-body{
+	border-top: 3px solid red;
+}
+</style>
+{% else %}
+<style>
+body{
+	background: url({% static 'img/symphony.png' %})
+}
+.content{
+	padding-top: 20px;
+}
+</style>		
+{% endif %}
+
+<body class=" ">
+<!-- 
+▒█▀▀█ ▀█▀ ▒█▄░▒█ ▒█▀▀▀█ 
+▒█░▄▄ ▒█░ ▒█▒█▒█ ░▄▄▄▀▀ 
+▒█▄▄█ ▄█▄ ▒█░░▀█ ▒█▄▄▄█ 
+-->
+<div id="wrapper">
+	<header class="navbar" role="banner">
+		{% include 'navbar.html' %}
+	</header>
+
+
+	<div class="mainnav">
+		{% if is_konfirmasi %}
+		{% include 'mainnav.html' %}				
+		{% endif %}
+	</div> <!-- /.mainnav -->
+	
+
+	<div class="content">
+
+		<div class="container">
+			{% block content %}
+
+			{% endblock content %}
+		</div> <!-- /.container -->
+
+	</div> <!-- .content -->
+
+</div> <!-- /#wrapper -->
+
+<footer class="footer">
+	{% include 'footer.html' %}
+</footer>	
+</body>
+{% block js %}
+
+{% endblock js %}
+</html>

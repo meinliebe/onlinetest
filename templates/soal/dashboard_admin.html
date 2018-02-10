@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row" style="margin-top:60px;">
+	<div class="col-md-10 col-md-offset-1">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Dashboard Administrator</h4>
+			</div>
+			<div class="portlet-body">
+				<h6 class="text-primary">Selamat datang {{ request.user.username }}!</h6>
+						<p>Gunakan "Admin Menu" pada pojok kanan atas untuk input soal, menentukan peserta ujian, dan melakukan kegiatan administratif lainnya.</p>					
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}

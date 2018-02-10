@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+{% load markdownify %}
+
+{% block content %}
+<style>
+.form-group{
+	margin-bottom: 0px;
+}
+.ul-jawaban{
+	padding-left: 15px;
+}
+</style>
+<div class="row" style="margin-top:30px;">	
+	<div class="col-md-12">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Detail Soal</h4>
+				<a href="{% url 'ubah_soal' soal.id %}" class="btn btn-xs btn-secondary pull-right"><i class="fa fa-edit"></i> Ubah</a>
+				<a class="btn btn-xs btn-danger pull-right btn-hapus-soal" data-toggle="modal" data-target="#konfirmasi_hapus_soal" style="margin-right: 20px;"><i class="fa fa-trash"></i> Hapus</a>
+			</div>
+			<form id="form_hapus_soal" action="{% url 'hapus_soal' %}" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="id_soal" value="{{soal.id}}">
+			</form>
+			<div class="portlet-body">
+				{% if messages %}
+				{% for  message in messages  %}
+				<div {% if message.tags %} class="alert alert-{{message.tags}} display-hide" {% endif %} >
+					<a class="close" data-dismiss="alert" href="#" aria-hidden="true"> x </a>
+					{% autoescape off %}
+					<span>{{message}}</span>
+					{% endautoescape %}	
+				</div>
+				{% endfor %}		
+				{% endif %}			
+				<form class="form-horizontal well">
+					<div class="form-group">
+						<label class="control-label col-md-2">Mata Kuliah - Kategori :</label>
+						<div class="col-md-10">
+							<div class="form-control-static">{{soal.kategori_soal.mata_kuliah}} - <i>{{soal.kategori_soal}}</i></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Tipe Soal - Sifat :</label>
+						<div class="col-md-10">
+							<div class="form-control-static">{{soal.get_tipe_soal_display}} - <i>{{soal.get_sifat_soal_display}}</i></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Soal :</label>
+						<div class="col-md-10">
+							<div class="form-control-static">
+								{% if soal.suara %}
+								<audio id="audio{{ forloop.counter }}" src="{{ soal.suara.url }}" preload="auto"></audio>
+								<a href="javascript:play_single_sound{{ forloop.counter }}();"
+								class="btn btn-primary btn-lg suara">Play Conversation</a>
+								<script type="text/javascript">
+								function play_single_sound{{ forloop.counter }}() {
+									document.getElementById('audio{{ forloop.counter }}').play();
+								}
+								$('a.suara').click(function () {
+									$(this).hide();
+								});
+								</script>
+								{% endif %}
+								{% autoescape off %}
+									
+								{{ soal.grup.text_soal_grup | safe}}
+								{% endautoescape %}
+								{% if soal.grup.gambar %} <br><img src="{{ soal.grup.gambar.url }}">{% endif %}
+								{% if soal.is_soal_autoescape %}{{ soal.text_soal | markdown | safe }} ... {% else %} 
+									{% autoescape off %}
+									{{ soal.text_soal | striptags }} ... 	
+									{% endautoescape %}
+									{% endif %} {% if soal.gambar %} <img src="{{ soal.gambar.url }}">{% endif %}
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-2">Jawaban :</label>
+						<div class="col-md-10">
+							<div class="form-control-static">
+								<ul class="ul-jawaban">
+									{% if soal.tipe_soal == 1 %}
+									{% for j in soal.jawaban_set.all %}
+									{% if j.gambar %}
+									<li><img src="{{ j.gambar.url }}">
+										{% if j.jawaban_benar %}
+										<i class="fa fa-check text-success"></i>
+										{% endif %}	
+									</li>
+									{% endif %}
+									<li>
+										{% if soal.is_jawaban_autoescape %}{{ j.text_jawaban | markdown | safe}} {% else %} {{ j.text_jawaban|safe }} {% endif %}&nbsp;&nbsp;&nbsp;
+										{% if j.jawaban_benar %}
+										<i class="fa fa-check text-success"></i>
+										{% endif %}	
+									</li>
+									{% endfor %}
+									{% else %}
+									{% for j in soal.jawaban_set.all %}										
+									{% if j.gambar %}
+									<li><img src="{{ j.gambar.url }}">
+										{% if j.jawaban_benar %}
+										<i class="fa fa-check text-success"></i>
+										{% endif %}	
+									</li>												
+									{% endif %}											
+									<li>
+										{% if soal.is_jawaban_autoescape %}{{ j.text_jawaban | markdown | safe }} {% else %} {{ j.text_jawaban|safe }} {% endif %}&nbsp;&nbsp;&nbsp;		{% if j.jawaban_benar %}
+										<i class="fa fa-check text-success"></i>
+										{% endif %}								
+									</li>												
+									{% endfor %}
+									{% endif %}									
+								</ul>
+							</div>
+						</div>
+					</div>					
+				</form>
+				<div class="col-md-12">
+					<a href="{% url 'list_soal' %}" class="pull-right"><i class="fa fa-angle-double-left "></i> &nbsp; Kembali ke daftar soal</a>
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>
+<div id="konfirmasi_hapus_soal" class="modal modal-styled fade" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header btn-danger">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="modal-title">Konfirmasi Hapus Soal</h3>
+			</div> <!-- /.modal-header -->
+			<div class="modal-body">
+				<p>
+					<h6 class="text-muted">Apakah anda yakin akan menghapus soal? <span class="text-secondary"></span></h6>
+				</p>
+			</div> <!-- /.modal-body -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+				<button type="submit" form="form_hapus_soal" class="btn btn-danger" name="mata_kuliah"><i class="fa fa-trash"></i>&nbsp;Hapus</button>
+			</div> <!-- /.modal-footer -->
+		</div> <!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div>
+{% endblock content %}
+
+
+

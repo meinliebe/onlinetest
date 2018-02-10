@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row" style="margin-top:30px;">
+	<div class="col-md-12">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Daftar Peserta Ujian</h4>	
+				<a href="{% url 'upload_peserta' %}" class="btn btn-xs btn-success pull-right"><i class="fa fa-file-excel-o"></i> Upload Excel</a>
+				<a href="#" class="btn btn-xs btn-secondary pull-right" style="margin-right: 20px;"><i class="fa fa-plus"></i> Tambah Peserta</a>
+			</div>
+			<div class="portlet-body">
+				{% if messages %}
+				{% for  message in messages  %}
+				<div {% if message.tags %} class="alert alert-{{message.tags}} display-hide" {% endif %} >
+					<a class="close" data-dismiss="alert" href="#" aria-hidden="true"> x </a>
+					{% autoescape off %}
+					<span>{{message}}</span>
+					{% endautoescape %}	
+				</div>
+				{% endfor %}				
+				{% endif %}
+				<div class="row well well-sm">
+					{# {% crispy form_peserta %} #}
+					<form action="{% url 'peserta_ujian' %}" method="POST" class="form-horizontal">
+						{% csrf_token %}
+						<div class="form-group">
+							<label class="control-label col-md-3">Mata Kuliah:</label>
+							<div class="col-md-5">
+								<select name="mata_kuliah" id="mata_kuliah" class="form-control input-sm">
+									<option value="0"> --- </option>
+									{% for m_k in mata_kuliah %}
+									<option value="{{m_k.id}}">{{m_k.mata_kuliah}}</option>
+									{% endfor %}
+								</select>
+							</div> <!-- /.col -->
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3">Program Studi:</label>
+							<div class="col-md-5">
+								<select name="program_studi" id="program_studi" class="form-control input-sm">
+									
+								</select>
+							</div> <!-- /.col -->
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3"></label>
+							<div class="col-md-5">
+								<a href="{% url 'peserta_ujian' %}">Tampilkan semua peserta</a>
+								<button type="submit" class="btn btn-secondary btn-xs pull-right"><i class="fa fa-search"></i> Cari</button>
+							</div> <!-- /.col -->
+						</div>						
+					</form>
+				</div>
+				<form id="form_hapus_peserta" action="{% url 'hapus_peserta' %}" method="POST" class="form-horizontal">
+					{% csrf_token %}
+					<div class="row">
+						<button class="btn btn-primary btn-xs" type="submit" form="form_hapus_peserta"><i class="fa fa-trash"></i>&nbsp;Hapus Peserta</button>					
+					</div>
+					<div class="row">
+						<table id="table_peserta" class="table table-hover table-condensed table-striped">
+							<thead>
+								<th><input type="checkbox" id="check_all"></th>
+								<th>No</th>
+								<th>NAMA</th>
+								<th>NIM</th>
+								<th>MATA KULIAH</th>
+								<th>PROGRAM STUDI</th>
+								<th></th>
+							</thead>
+							<tbody>
+								{% for p in peserta %}
+								<tr>
+									<td><input type="checkbox" name="_selected_action" value="{{p.id}}"></td>
+									<td>{{forloop.counter}}</td>
+									<td>{{p.nama|title}}</td>
+									<td>{{p.nim}}</td>
+									<td>{{p.mata_kuliah|title}}</td>
+									<td>{{p.program_studi|title}}</td>
+									<td class="pull-right">										
+										<i class="fa fa-edit text-secondary"></i> <a href="{% url 'ubah_peserta' id_peserta=p.id %}">Ubah</a>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
+{% block js %}
+<script>
+$(document).ready(function(){
+	$('#table_peserta').DataTable({
+		"bFilter": true,
+		"bInfo": false,
+		"bLengthChange": false,
+
+	});
+	$('#mata_kuliah').select2();
+	$("#check_all").click(function(){
+		$('input:checkbox').not(this).prop('checked', this.checked);
+	});	
+})
+</script>
+{% endblock js %}

@@ -1,0 +1,148 @@
+{% load static %}
+
+<style>
+.navbar .navbar-nav > li > a{
+	color: #FFFFFF;
+}
+.logo-text{
+	font-family: 'Oswald', 'Trebuchet MS', 'Open Sans', arial, sans-serif;		
+	/*color: #ffffff;*/
+	margin-top: 12px;
+}
+</style>
+<div class="container">
+	<div class="navbar-header">
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+			<span class="sr-only">Toggle navigation</span>
+			<i class="fa fa-cog"></i>
+		</button>
+
+		<a href="./index.html" class="navbar-brand navbar-brand-img">
+			<!-- <img src="{% static 'img/logo.png' %}" alt="MVP Ready"> -->
+			<h3 class="logo-text">CBT KOMPETENSI UMS</h3>	
+		</a>
+	</div> <!-- /.navbar-header -->
+
+	<nav class="collapse navbar-collapse" role="navigation">
+
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<a>{{request.user.username}}</a>
+			</li>			
+			<li class="dropdown navbar-profile">
+				{% if user.is_authenticated %}
+				{% if request.user.is_staff %}
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">
+					Admin Menu&nbsp;
+					<i class="fa fa-caret-down"></i>
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li>
+						<a href="{% url 'list_soal' %}">
+							<i class="fa fa-file-word-o"></i>
+							&nbsp;&nbsp;Soal Ujian
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'tambah_kategori_soal' %}">
+							<i class="fa fa-list"></i>
+							&nbsp;&nbsp;Kategori Soal
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'peserta_ujian' %}">
+							<i class="fa fa-user"></i>
+							&nbsp;&nbsp;Peserta Ujian
+						</a>
+					</li>
+					<li>
+						<a href="#">
+							<i class="fa fa-file-o "></i>
+							&nbsp;&nbsp;Hasil Ujian
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'logout' %}" class="text-primary">
+							<i class="fa fa-sign-out"></i>
+							&nbsp;&nbsp;Logout
+						</a>
+					</li>						
+				</ul>
+			</li>			
+			{% else %}
+			<li>
+				<a href="#" data-toggle="modal" data-target="#petunjuk_modal">Petunjuk Soal</a>
+			</li>
+
+			<li>
+				<a href="#" data-toggle="modal" data-target="#tatib_modal">Tata tertib</a>
+			</li>					
+			<li>
+				<a href="{% url 'logout' %}" class="text-primary">
+					<i class="fa fa-sign-out"></i>
+					&nbsp;&nbsp;Logout
+				</a>
+			</li>
+			{% endif %}					
+			{% endif %}
+		</li>
+	</ul>
+
+</nav>
+</div> <!-- /.container -->
+<div id="petunjuk_modal" class="modal modal-styled fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="modal-title">Petunjuk Soal Ujian</h3>
+			</div> <!-- /.modal-header -->
+			<div class="modal-body">
+				<br>Ujian Kompetensi UMS menggunakan tiga jenis soal sbb:
+				<br>Pilihan Ganda
+				<br>Pilih jawaban yang paling benar
+				<br><br>
+				<br>Soal 1234
+				<br>Pilihlah
+				<br>(A) jika jawaban (1), (2), dan (3) benar
+				<br>(B) jika jawaban (1) dan (3) benar
+				<br>(C) jika jawaban (2) dan (4) benar
+				<br>(D) jika jawaban (4) saja yang benar
+				<br>(E) jika semua jawaban (1), (2), (3), dan (4) benar
+				<br><br>
+				<br>Soal Sebab Akibat
+				<br>Soal terdiri atas tiga bagian, yaitu PERNYATAAN, SEBAB, dan ALASAN yang disusun secara berurutan.
+				<br>(A) Jika pernyataan benar, alasan benar, keduanya sebab akibat
+				<br>(B) Jika pernyataan benar, alasan benar, tetapi tidak sebab akibat
+				<br>(C) Jika pernyataan benar, alasan salah
+				<br>(D) Jika pernyataan salah, alasan benar
+				<br>(E) Jika pernyataan dan alasan, keduanya salah	
+			</div> <!-- /.modal-body -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+			</div> <!-- /.modal-footer -->
+		</div> <!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div>
+
+<div id="tatib_modal" class="modal modal-styled fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="modal-title">Tata Tertib Ujian</h3>
+			</div> <!-- /.modal-header -->
+			<div class="modal-body">
+				<ul>
+					<li>Peserta tidak boleh membawa makanan di ruang ujian</li>
+					<li>Peserta tidak boleh bercakap-cakap atau membuat kegaduhan selama mengikuti ujian</li>
+					<li>Peserta wajib membawa KTM atau identitas diri yang ada foto didalamnya, dan menunjukannya kepada petugas ketika diminta</li>
+					<li>Apabila peserta mampu menyelesaikan soal lebih awal, maka dipersilahkan untuk mendahului keluar ruangan</li>
+				</ul>
+			</div> <!-- /.modal-body -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+			</div> <!-- /.modal-footer -->
+		</div> <!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div>

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+{% load markdownify %}
+
+
+{% block content %}
+<div  class="row">
+	<div class="col-md-12">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Soal</h4>		
+				<div class="pull-right">
+					<!-- <button id="prevSoal" data-toggle="tab" class="btn btn-xs btn-secondary btn-prev"><i class="fa fa-chevron-left"></i> Prev</button>
+					<button id="nextSoal" data-toggle="tab" class="btn btn-xs btn-secondary btn-next">Next <i class="fa fa-chevron-right"></i></button> -->
+					<button type="submit" form="soal" formaction="{% url 'selesai_ujian' %}" class="btn btn-xs btn-secondary">Kirim Jawaban</button>
+				</div>		
+			</div>
+			<div class="portlet-body" style="padding-top: 10px;">
+				<form id="soal" method="POST">
+					{% csrf_token %}					
+	                <input type="hidden" name="mata_kuliah" value="{{mata_kuliah.id}}">
+					<ul class="nav nav-pills">
+						{% for d in soal %}
+							<li{% if forloop.counter == 1 %} class="active" {% endif %}>
+								<a href="#{{ forloop.counter }}" data-toggle="tab">{{ forloop.counter }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+					<div class="tab-content">
+		                {% for d in soal %}
+		                    <div class="tab-pane fade {% if forloop.counter == 1 %} in active {% endif %}" id="{{ forloop.counter }}">
+		                        {% if d.tipe_soal == "123" %}
+		                            <a href="#modalSoalB" data-toggle="modal">Petunjuk soal 123</a>
+		                        {% elif d.tipe_soal == "SebabAkibat" %}
+		                            <a href="#modalSoalC" data-toggle="modal">Petunjuk soal sebab-akibat</a>
+		                        {% else %}
+		                            <a href="#modalSoalA" data-toggle="modal">Petunjuk soal pilihan-ganda</a>
+		                        {% endif %}
+		                        {% if d.suara %}
+		                            <br>
+		                            <audio id="audio{{ forloop.counter }}" src="{{ d.suara.url }}" preload="auto"></audio>
+		                            <a href="javascript:play_single_sound{{ forloop.counter }}();"
+		                               class="btn btn-primary btn-lg suara">Play Conversation</a>
+		                            <script type="text/javascript">
+		                                function play_single_sound{{ forloop.counter }}() {
+		                                    document.getElementById('audio{{ forloop.counter }}').play();
+		                                }
+		                                $('a.suara').click(function () {
+		                                   $(this).hide();
+		                                });
+		                            </script>
+		                        {% endif %}
+		                        {{ d.grup.text_soal_grup | markdown | safe }}
+
+		                        {% if d.grup.gambar %} <br><img src="{{ d.grup.gambar.url }}">{% endif %}
+
+		                        {% if d.is_soal_autoescape %}{{ d.text_soal | markdown | safe }} {% else %} {{ d.text_soal|safe }} {% endif %} {% if d.gambar %} <img src="{{ d.gambar.url }}">{% endif %}
+		                        <div>
+		                        {% if d.tipe_soal == 1 %}
+		                            {% for j in d.jawaban_set.all %}
+		                                <input type="radio" name="{{ d.id }}" value="{{ j.id }}">
+		                                    {% if j.gambar %}
+		                                        <img src="{{ j.gambar.url }}">
+		                                    {% endif %}
+
+		                                    {% if d.is_jawaban_autoescape %}{{ j.text_jawaban | markdown | safe}} {% else %} {{ j.text_jawaban|safe }} {% endif %}&nbsp;&nbsp;&nbsp;
+
+		                                </input> <br/>
+		                            {% endfor %}
+		                        {% else %}
+		                             {% for j in d.jawaban_set.all %}
+		                                <input type="radio" name="{{ d.id }}" value="{{ j.id }}">
+		                                    {% if j.gambar %}
+		                                        <img src="{{ j.gambar.url }}">
+		                                    {% endif %}
+
+		                                    {% if d.is_jawaban_autoescape %}{{ j.text_jawaban | markdown | safe }} {% else %} {{ j.text_jawaban|safe }} {% endif %}&nbsp;&nbsp;&nbsp;
+
+		                                </input> <br/>
+		                             {% endfor %}
+		                        {% endif %}
+		                        </div>
+		                    </div>
+		                {% endfor %}
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}

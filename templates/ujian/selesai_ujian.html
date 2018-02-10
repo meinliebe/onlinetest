@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+{% if more_space %}
+	<div class="row" style="margin-top:120px;">
+{% else %}
+	<div class="row">	
+{% endif %}
+	<div class="col-md-8 col-md-offset-2">
+		<div class="portlet portlet-boxed">
+			<div class="portlet-header">
+				<h4 class="portlet-title">Hasil Test</h4>				
+			</div>
+			<div class="portlet-body">
+				{% if already_ujian %}
+				<div class="col-md-12">
+					<p>Anda tidak diperkenankan karena sudah melaksanakan ujian <b>{{detail_peserta.mata_kuliah}}</b></p>
+				</div>	
+				{% else %}
+				<div class="col-md-12">
+					<p><h6>Ujian telah selesai dilaksanakan, berikut adalah hasil ujian anda:</h6></p>
+				</div>
+				<div class="col-md-2"><h6>Nama </h6></div><div class="col-md-10"><h6>: {{peserta.nama}}</h6></div>
+				<div class="col-md-2"><h6>NIM </h6></div><div class="col-md-10"><h6>: {{peserta.nim}}</h6></div>
+				<div class="col-md-2"><h6>Mata Kuliah </h6></div><div class="col-md-10"><h6>: {{peserta.mata_kuliah}}</h6></div>
+				{% for n in nilai %}
+					<div class="col-md-2"><h6>Mulai </h6></div><div class="col-md-10"><h6>: {{n.mulai|date:'d-m-Y H:i:s'}}</h6></div>
+					<div class="col-md-2"><h6>Selesai </h6></div><div class="col-md-10"><h6>: {{n.selesai|date:'d-m-Y H:i:s'}}</h6></div>
+					<div class="col-md-2"><h6>Score </h6></div><div class="col-md-10"><h6>: <span class="text-primary">{{n.nilai}}</span></h6></div>
+				{% endfor %}
+				<div class="col-md-12">
+					<h6><p>klik <span class="label label-primary demo-element">Logout</span> untuk menyimpan score anda dan keluar aplikasi</p></h6>
+					<a href="{% url 'dashboard_peserta' %}"><< Kembali ke CBT Dashboard</a>
+					<a class="btn btn-primary pull-right" href="{% url 'logout' %}">Logout</a>
+				</div>
+				{% endif %}		
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}
